@@ -1,0 +1,8 @@
+./
+/usr/share/arduino/hardware/arduino/cores/arduino
+
+/usr/share/arduino/libraries/Wire
+
+/mnt/Store/Kode/arduino_user_libs/BMP085
+/mnt/Store/Kode/arduino_user_libs/DHT
+/mnt/Store/Kode/arduino_user_libs/VirtualWire

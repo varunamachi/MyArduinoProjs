@@ -1,0 +1,9 @@
+./
+/usr/share/arduino//hardware/arduino/cores/arduino
+
+
+/usr/share/arduino/libraries/Wire
+/usr/share/arduino/libraries/LiquidCrystal
+
+/mnt/Store/Kode/arduino_user_libs/VirtualWire
+/mnt/Store/Kode/arduino_user_libs/RTClib

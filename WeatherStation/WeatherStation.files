@@ -1,0 +1,5 @@
+src/Makefile
+src/WeatherStation.cpp
+libraries/README
+libraries/*/*
+

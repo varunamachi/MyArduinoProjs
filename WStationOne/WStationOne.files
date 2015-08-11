@@ -1,0 +1,5 @@
+src/Makefile
+src/WStationOne.cpp
+libraries/README
+libraries/*/*
+
