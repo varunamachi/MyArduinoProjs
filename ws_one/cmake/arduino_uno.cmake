@@ -1,0 +1,8 @@
+set(ARDUINO_PROTOCOL "arduino")
+set(ARDUINO_BOARD "standard")
+set(ARDUINO_MCU "atmega328p")
+set(ARDUINO_FCPU "16000000")
+set(ARDUINO_UPLOAD_SPEED "57600")
+set(ARDUINO_PORT "/dev/ttyUSB0")
+set(ARDUINO_ROOT "$ENV{HOME}/Bin/arduino/")
+include(${CMAKE_SOURCE_DIR}/scripts/arduino.cmake)
