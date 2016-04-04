@@ -17,8 +17,8 @@ enable_language(ASM)
 # C only fine tunning
 set(TUNNING_FLAGS "-funsigned-char -funsigned-bitfields -fpack-struct -fshort-enums") 
 
-set(CMAKE_CXX_FLAGS "-mmcu=${ARDUINO_MCU} -DF_CPU=${ARDUINO_FCPU} -Os")
-set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} ${TUNNING_FLAGS} -Wall -Wstrict-prototypes -std=gnu99")
+set(CMAKE_CXX_FLAGS "-mmcu=${ARDUINO_MCU} -DF_CPU=${ARDUINO_FCPU} -Os -Wl,-u,vfprintf")
+set(CMAKE_C_FLAGS "${CMAKE_CXX_FLAGS} ${TUNNING_FLAGS} -Wall -Wstrict-prototypes -std=gnu99 -Wl,-u,vfprintf" )
 
 set(ARDUINO_CORE_DIR "${ARDUINO_ROOT}/hardware/arduino/avr/cores/arduino")
 set(ARDUINO_PINS_DIR "${ARDUINO_ROOT}/hardware/arduino/avr/variants/${ARDUINO_BOARD}")
@@ -30,29 +30,32 @@ include_directories(${ARDUINO_PINS_DIR})
 include_directories(${ARDUINO_CORE_DIR})
 include_directories(${ARDUINO_ROOT}/hardware/tools/avr/avr/include/ )
 
-set(ARDUINO_SOURCE_FILES
-        ${ARDUINO_CORE_DIR}/wiring_digital.c
-        ${ARDUINO_CORE_DIR}/wiring.c
-        ${ARDUINO_CORE_DIR}/hooks.c
 
-#        ${ARDUINO_CORE_DIR}/wiring_pulse.S
-#        ${ARDUINO_CORE_DIR}/WInterrupts.c
-#        ${ARDUINO_CORE_DIR}/wiring_pulse.c
-#        ${ARDUINO_CORE_DIR}/wiring_shift.c
-#        ${ARDUINO_CORE_DIR}/wiring_analog.c
-#        ${ARDUINO_CORE_DIR}/WMath.cpp
-#        ${ARDUINO_CORE_DIR}/IPAddress.cpp
-#        ${ARDUINO_CORE_DIR}/Tone.cpp
-#        ${ARDUINO_CORE_DIR}/HardwareSerial2.cpp
-#        ${ARDUINO_CORE_DIR}/Print.cpp
-#        ${ARDUINO_CORE_DIR}/new.cpp
-#        ${ARDUINO_CORE_DIR}/HardwareSerial0.cpp
-#        ${ARDUINO_CORE_DIR}/HardwareSerial.cpp
-#        ${ARDUINO_CORE_DIR}/WString.cpp
-#        ${ARDUINO_CORE_DIR}/abi.cpp
-#        ${ARDUINO_CORE_DIR}/USBCore.cpp
-#        ${ARDUINO_CORE_DIR}/Stream.cpp
-#        ${ARDUINO_CORE_DIR}/CDC.cpp
+set(ARDUINO_SOURCE_FILES
+    ${ARDUINO_CORE_DIR}/wiring_pulse.S
+    ${ARDUINO_CORE_DIR}/abi.cpp
+    ${ARDUINO_CORE_DIR}/HardwareSerial0.cpp
+#    ${ARDUINO_CORE_DIR}/HardwareSerial2.cpp
+    ${ARDUINO_CORE_DIR}/HardwareSerial.cpp
+#    ${ARDUINO_CORE_DIR}/IPAddress.cpp
+#    ${ARDUINO_CORE_DIR}/new.cpp
+    ${ARDUINO_CORE_DIR}/Print.cpp
+#    ${ARDUINO_CORE_DIR}/Tone.cpp
+#    ${ARDUINO_CORE_DIR}/WInterrupts.c
+    ${ARDUINO_CORE_DIR}/wiring.c
+    ${ARDUINO_CORE_DIR}/wiring_pulse.c
+#    ${ARDUINO_CORE_DIR}/WMath.cpp
+#    ${ARDUINO_CORE_DIR}/CDC.cpp
+#    ${ARDUINO_CORE_DIR}/HardwareSerial1.cpp
+#    ${ARDUINO_CORE_DIR}/HardwareSerial3.cpp
+    ${ARDUINO_CORE_DIR}/hooks.c
+#    ${ARDUINO_CORE_DIR}/PluggableUSB.cpp
+#    ${ARDUINO_CORE_DIR}/Stream.cpp
+#    ${ARDUINO_CORE_DIR}/USBCore.cpp
+#    ${ARDUINO_CORE_DIR}/wiring_analog.c
+    ${ARDUINO_CORE_DIR}/wiring_digital.c
+#    ${ARDUINO_CORE_DIR}/wiring_shift.c
+    ${ARDUINO_CORE_DIR}/WString.cpp
 )
 
 set(PORT $ENV{ARDUINO_PORT})
@@ -85,6 +88,8 @@ add_custom_command(TARGET reset POST_BUILD
     COMMAND echo 0 > ${PORT}
 )
 
+link_directories( "${ARDUINO_ROOT}/hardware/tools/avr/avr/lib/" )
+
 
 macro( add_arduino_lib LIB_NAME )
     set(ARDUINO_LIBS_DIR "${ARDUINO_ROOT}/libraries")
@@ -108,7 +113,7 @@ macro( add_arduino_lib LIB_NAME )
     else()
         message( FATAL_ERROR "Could Not Find Lib: ${LIB_NAME}" )
     endif()
-    file(GLOB LIB_SRC
+    file(GLOB_RECURSE LIB_SRC
         "${LIB_DIR}/*.h"
         "${LIB_DIR}/*.cpp"
         "${LIB_DIR}/*.c"

@@ -1,14 +1,18 @@
 #include <Arduino.h>
-#include <LiquidCrystal.h>
 #include <RTClib.h>
 #include <Wire.h>
-#include <stdlib.h>
 #include <Adafruit_BMP085.h>
 #include <DHT.h>
+#include <HardwareSerial.h>
+
+#ifdef HAVE_LCD
+    #include <LiquidCrystal.h>
+    LiquidCrystal lcd( 12, 11, 5, 4, 3, 2 );
+#endif
+
 
 const float SEA_LEVEL = 101325.0f;
 
-LiquidCrystal lcd( 12, 11, 5, 4, 3, 2 );
 RTC_DS1307 rtc;
 Adafruit_BMP085 bmp;
 DHT dht(uint8_t( 6 ), DHT11);
@@ -55,19 +59,22 @@ void setup()
 {
     delay(1000);
 
+#ifdef HAVE_LCD
+    lcd.begin( 16, 2 );
+#endif
+
     dht.begin();
     if (!bmp.begin()) {
-        Serial.println("Could not find a valid BMP085 sensor, check wiring!");
+        Serial.println("BMPErr");
     }
 
     rtc.begin();
     if ( ! rtc.isrunning() ) {
-      Serial.println("RTC is NOT running!");
+      Serial.println("RTCErr");
       rtc.adjust( DateTime( F( __DATE__ ), F( __TIME__ )));
     }
 
     Serial.begin( 9600 );           // Debugging only
-    lcd.begin( 16, 2 );
     BH1750_Init(BH1750_address);
     delay( 2000 );
 }
@@ -76,24 +83,30 @@ void setup()
 void showTime( bool onlyLcd )
 {
     DateTime now = rtc.now();
-
+#ifdef HAVE_LCD
     char buffer[16];
     sprintf( buffer,
              "%02d:%02d:%02d",
              now.hour(),
              now.minute(),
              now.second() );
-
     lcd.setCursor(0,0);
     lcd.print(buffer);
-
     if( ! onlyLcd ) {
         Serial.print( buffer );
     }
+#else
+    Serial.print(now.hour());
+    Serial.print(":");
+    Serial.print(now.minute());
+    Serial.print(":");
+    Serial.print(now.second());
+#endif
 }
 
 void loop()
 {
+#ifdef HAVE_LCD
     if( timeUpdateCounter != 0 ) {
         showTime( true );
     }
@@ -123,20 +136,28 @@ void loop()
             val = readLightIntensity();
             break;
         }
-
         lcd.setCursor( 0, 1 );
         lcd.print( quantity  );
         lcd.setCursor( 8, 1 );
         lcd.print( val, 2 );
-
         Serial.print( quantity );
         Serial.println( val );
-
         count = ( count + 1 ) % 5;
     }
     timeUpdateCounter = ( timeUpdateCounter + 1 ) % 3;
-    Serial.println( timeUpdateCounter );
     delay( 1000 );
+#else
+    showTime( false );
+    Serial.print( "Temparature: " );
+    Serial.println( dht.readTemperature() );
+    Serial.print( "Humidity: " );
+    Serial.println( dht.readHumidity() );
+    Serial.print( "Pressure: " );
+    Serial.println( bmp.readPressure() / 1000 );
+    Serial.print( "Light: " );
+    Serial.println( readLightIntensity() );
+    delay( 1000 );
+#endif
 }
 
 
