@@ -12,8 +12,8 @@
 #include "Constants.h"
 #include "Data.h"
 
-#define SW_SERIAL_RX_PIN  4 //  Connect this pin to TX on the esp8266
-#define SW_SERIAL_TX_PIN  6 //  Connect this pin to RX on the esp8266
+#define SW_SERIAL_RX_PIN  9 //  Connect this pin to TX on the esp8266
+#define SW_SERIAL_TX_PIN  10 //  Connect this pin to RX on the esp8266
 #define ESP8266_RESET_PIN 5 // Connect this pin to CH_PD on the esp8266, not reset. (let reset be unconnected)
 
 const int INDEX_READ = 5;
@@ -43,7 +43,7 @@ void wifiInit() {
     while ( ! swSerial );
     Serial.println("Starting wifi");
     wifi.setTransportToTCP();// this is also default
-    wifi.endSendWithNewline(false);
+    // wifi.endSendWithNewline(false);
     wifi_started = wifi.begin();
     if( wifi_started ) {
         wifi.connectToAP("", "");
@@ -134,7 +134,6 @@ void printLCD( const Data::WeatherData &weatherData ) {
     static int quantityIndex = 0;
     lcd.setCursor( 0, 1 );
     lcd.print( "                " );
-    showTime( false );
     double val = weatherData.temparature();
     String quantity = "Tempr: ";
     switch( quantityIndex ) {
@@ -165,7 +164,7 @@ void printLCD( const Data::WeatherData &weatherData ) {
 }
 
 void printSerial( const Data::WeatherData &weatherData ) {
-
+    Serial.println( "Hit..." );
 }
 
 void sendData( const Data::WeatherData &weatherData ) {
@@ -190,7 +189,9 @@ void sendData( const Data::WeatherData &weatherData ) {
     // check for messages if there is a connection
     for( int i = 0; i < MAX_CONNECTIONS; i++ ) {
         if( connections[i].connected ) {
-            wifi.send( SERVER, buffer );
+            if( wifi.send( SERVER, buffer )) {
+                Serial.println("Sent Data...");
+            }
         }
     }
 }
@@ -199,20 +200,20 @@ void loop()
 {
     static Data::WeatherData weatherData;
     showTime( true );
-    if( counter == INDEX_READ || counter == INDEX_WIFI ) {
+    if( counter % INDEX_READ == 0 ) {
         weatherData.setTemperature( dht.readTemperature() );
         weatherData.setHumidity( dht.readHumidity() );
-        weatherData.setPressure( bmp.readPressure() );
+        weatherData.setPressure( bmp.readPressure() / 1000 );
         weatherData.setAltitude( bmp.readAltitude( SEA_LEVEL ));
         weatherData.setLight( readLightIntensity() );
 
         printLCD( weatherData );
         printSerial( weatherData );
     }
-    if( counter == INDEX_WIFI ) {
+    if( counter == 0 ) {
         sendData( weatherData );
     }
-    counter = ( counter + 1 ) % 5;
+    counter = ( counter + 1 ) % INDEX_WIFI;
     delay( 1000 );
 }
 
