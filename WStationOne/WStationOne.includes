@@ -1,9 +1,11 @@
 ./
 /usr/share/arduino//hardware/arduino/cores/arduino
-
 /usr/share/arduino/libraries/Wire
 /usr/share/arduino/libraries/LiquidCrystal
 
-/mnt/Store/Kode/arduino_user_libs/BMP085
-/mnt/Store/Kode/arduino_user_libs/DHT
-/mnt/Store/Kode/arduino_user_libs/RTClib
+libraries/BMP085
+libraries/DHT
+libraries/RTClib
+libraries/AltSoftSerial
+libraries/ESP8266wifi
+src

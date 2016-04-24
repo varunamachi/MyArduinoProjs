@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <Adafruit_BMP085.h>
 #include <DHT.h>
+#include <HardwareSerial.h>
+#include <AltSoftSerial.h>
 
 const float SEA_LEVEL = 101325.0f;
 
@@ -149,3 +151,4 @@ int main()
     }
     return 0;
 }
+

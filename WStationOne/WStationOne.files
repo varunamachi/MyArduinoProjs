@@ -1,5 +1,7 @@
 src/Makefile
 src/WStationOne.cpp
+src/Constants.h
 libraries/README
 libraries/*/*
 
+src/Constants.h

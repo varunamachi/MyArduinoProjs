@@ -56,6 +56,8 @@ set(ARDUINO_SOURCE_FILES
     ${ARDUINO_CORE_DIR}/wiring_digital.c
 #    ${ARDUINO_CORE_DIR}/wiring_shift.c
     ${ARDUINO_CORE_DIR}/WString.cpp
+    ${ARDUINO_CORE_DIR}/Stream.cpp
+    ${ARDUINO_CORE_DIR}/Print.cpp
 )
 
 set(PORT $ENV{ARDUINO_PORT})

@@ -3,7 +3,7 @@
 ARDUINO_DIR     = /usr/share/arduino/
 TARGET          = output
 USER_LIB_PATH   = ../libraries
-ARDUINO_LIBS    =  Wire LiquidCrystal RTClib BMP085 DHT
+ARDUINO_LIBS    =  Wire LiquidCrystal RTClib BMP085 DHT AltSoftSerial ESP8266wifi
 
 
 # Avrdude code for programming

@@ -10,6 +10,7 @@ add_arduino_lib( "RTCLib" )
 add_arduino_lib( "Wire" )
 add_arduino_lib( "Adafruit-BMP085" )
 add_arduino_lib( "DHT" )
+add_arduino_lib( "SoftwareSerial" )
 
 set( MYPROJECT_SOURCE_FILES
      ${CMAKE_SOURCE_DIR}/WStationOne.cpp
