@@ -46,9 +46,15 @@ void wifiInit() {
     // wifi.endSendWithNewline(false);
     wifi_started = wifi.begin();
     if( wifi_started ) {
-        wifi.connectToAP("", "");
+        wifi.connectToAP( Constants::SSID, Constants::KEY );
         wifi_started = wifi.connectToServer( Constants::SERVER_IP,
                                              Constants::SERVER_PORT );
+        if( wifi_started ) {
+            Serial.println( "Wifi Started!!" );
+        }
+        else {
+            Serial.println( "Couldnt start wifi" );
+        }
         //    wifi.startLocalServer(SERVER_PORT);
     }
     else {
@@ -108,6 +114,7 @@ void setup()
     lcd.begin( 16, 2 );
     BH1750_Init(BH1750_address);
     delay( 2000 );
+    wifiInit();
 }
 
 
